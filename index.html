@@ -245,13 +245,7 @@
             <button class="close-btn" onclick="closeProfileModal()">×</button>
         </div>
         <div class="profile-picture-section">
-            <div class="profile-picture-large" id="profilePictureLarge">U</div>
-            <div class="upload-btn-container">
-                <button class="upload-btn" onclick="document.getElementById('profilePictureInput').click()">Upload</button>
-                <button class="remove-btn" onclick="removeProfilePicture()">Remove</button>
-            </div>
-            <input type="file" id="profilePictureInput" accept="image/*" onchange="uploadProfilePicture(event)">
-        </div>
+            <div class="profile-picture-large" id="profilePictureLarge">Y</div>
         <div class="form-group">
             <label class="form-label" for="profileName">Name</label>
             <input type="text" id="profileName" class="form-input">
@@ -365,7 +359,7 @@ function addMessage(role, content, saveToChat = true) {
             ? `<img src="${profileData.picture}" alt="Profile">`
             : profileData.name.charAt(0).toUpperCase();
     } else {
-        avatar.innerHTML = `<img src="images/favicon.ico" alt="AI" />`;
+        avatar.innerHTML = `<img src="images/favicon.ico" alt="AI" style="width:20px;height:20px;">`;
     }
 
     const contentDiv = document.createElement('div');
