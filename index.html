@@ -365,7 +365,7 @@ function addMessage(role, content, saveToChat = true) {
             ? `<img src="${profileData.picture}" alt="Profile">`
             : profileData.name.charAt(0).toUpperCase();
     } else {
-        avatar.textContent = '🤖';
+        avatar.innerHTML = `<img src="images/favicon.ico" alt="AI" />`;
     }
 
     const contentDiv = document.createElement('div');
