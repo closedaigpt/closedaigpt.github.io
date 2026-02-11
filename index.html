@@ -142,6 +142,60 @@
     ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
     .sidebar ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
     .sidebar ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+    .code-block {
+        position: relative;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    /* Copy button */
+    .copy-btn {
+        position: absolute;
+        top: 10px;
+        left: 10px; /* moved to LEFT */
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        font-size: 12px;
+        font-weight: 500;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(6px);
+        border: 2px solid rgba(0, 0, 0, 0.25);
+        border-color: rgba(0, 0, 0, 0.25);
+        color: #000000;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        opacity: 0;
+    }
+
+    /* Show button on hover */
+    .code-block:hover .copy-btn {
+        opacity: 1;
+    }
+
+    /* Hover effect */
+    .copy-btn:hover {
+        background: rgba(255, 255, 255, 0.18);
+        transform: translateY(-1px);
+        border: 2px solid rgba(0, 0, 0, 0.25);
+        border-color: rgba(0, 0, 0, 0.25);
+    }
+
+    /* Click effect */
+    .copy-btn:active {
+        transform: scale(0.95);
+        border: 3px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* Copied state */
+    .copy-btn.copied {
+        background: rgba(80, 200, 120, 0.2);
+        border-color: rgba(80, 200, 120, 0.5);
+    }
+
 </style>
 </head>
 <body>
@@ -365,7 +419,6 @@ function addMessage(role, content, saveToChat = true) {
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
 
-    // Render Markdown using marked
     const p = document.createElement('p');
     p.innerHTML = marked.parse(content, {
         gfm: true,
@@ -383,8 +436,37 @@ function addMessage(role, content, saveToChat = true) {
     div.appendChild(contentDiv);
     messagesContainer.appendChild(div);
 
-    // Highlight all code blocks
-    div.querySelectorAll('pre code').forEach(block => hljs.highlightElement(block));
+    // Highlight + Add Copy Buttons
+    div.querySelectorAll('pre').forEach(pre => {
+        const codeBlock = pre.querySelector('code');
+
+        hljs.highlightElement(codeBlock);
+
+        pre.classList.add('code-block');
+
+        const button = document.createElement('button');
+        button.className = 'copy-btn';
+        button.innerHTML = `
+            <span class="copy-icon">📋</span>
+            <span class="copy-text">Copy</span>
+        `;
+
+        button.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(codeBlock.innerText);
+                button.classList.add('copied');
+                button.querySelector('.copy-text').textContent = 'Copied!';
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    button.querySelector('.copy-text').textContent = 'Copy';
+                }, 1500);
+            } catch (err) {
+                console.error('Copy failed', err);
+            }
+        });
+
+        pre.appendChild(button);
+    });
 
     // Scroll to bottom
     chatContainer.scrollTop = chatContainer.scrollHeight;
